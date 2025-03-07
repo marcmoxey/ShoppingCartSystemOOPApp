@@ -69,33 +69,103 @@ namespace ShoppingSystem
 
         }
 
-        public static List<ProductModel> RemoveItemFromCart(List<ProductModel> shoppingCart, string productName) 
+        public static ShoppingCartModel RemoveItemFromCart(ShoppingCartModel shoppingCart, string productName) 
         { 
-                // ask for name of the product to remove
-                    // check if it matches name in cart - ForLoop
-                         // check if there <1 quantity of product s
-                            // ask how much they want to remove
-                                // remove item(s) from cart
-                    
+            // check if the cart is empty 
+            if(shoppingCart.cart == null || shoppingCart.cart.Count == 0) 
+            {
+                Console.WriteLine("Your cart is empty");
+            }
 
-                
+            // Find the product in the cart
+            ProductModel productToRemove = null;
+
+            foreach (var product in shoppingCart.cart) 
+            {
+                // check if it matches name in cart 
+                if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                {
+                    productToRemove = product;
+                }
+            }
+
+            // if the product is not found
+            if(productToRemove == null)
+            {
+                Console.WriteLine($"Product '{productName}' not found in the cart.");
+                return shoppingCart;
+            }
+
+            // ask how much they want to remove
+            Console.Write($"How many {productToRemove.Name} do you want to remove (Available: {productToRemove.Quantity}: ");
+            string quantityToRemoveText = Console.ReadLine();
+            int quantityToRemove = 0;
+            bool isValidQuantity = int.TryParse( quantityToRemoveText, out quantityToRemove);
 
 
-            return shoppingCart;
+            while(!isValidQuantity || quantityToRemove <= 0 || quantityToRemove > productToRemove.Quantity)
+            {
+                Console.WriteLine("Invalid input. Please enter a valid quantity.");
+                Console.Write($"How many '{productToRemove.Name}' do you want to remove? (Available: {productToRemove.Quantity}): ");
+                quantityToRemoveText = Console.ReadLine();
+                isValidQuantity = int.TryParse(quantityToRemoveText, out quantityToRemove);
+            }
+
+
+            // Remove item(s) from the cart 
+            if (quantityToRemove == productToRemove.Quantity)
+            { 
+            
+                // Remove the entire product if the quantity matches
+                shoppingCart.cart.Remove(productToRemove);
+                Console.WriteLine($"All {productToRemove.Quantity} '{productToRemove.Name}' have been removed from the cart.");
+
+            } else
+            {
+                // Reduce the quantity of the product 
+                productToRemove.Quantity = quantityToRemove;
+                Console.WriteLine($"{quantityToRemove} '{productToRemove.Name}' have been removed from the cart.");
+            }
+
+
+
+
+
+
+                return shoppingCart;
             
         }
 
-        public static decimal GetTotalInCart(List<ProductModel> shoppingCart)
+        public static decimal GetTotalInCart(ShoppingCartModel shoppingCart)
         {
             decimal total = 0;
 
-            // loop through items in cart 
-                // quantity * price = total
-                    // add to total
+            // Check if the cart is empty
+            if (shoppingCart.cart == null || shoppingCart.cart.Count == 0)
+            {
+                Console.WriteLine("Your cart is empty.");
+                return total;
+            }
 
+            // Display cart header
+            Console.WriteLine("\nShopping Cart");
+            Console.WriteLine("-----------------------------------------------------------------");
+
+            // Loop through items in the cart
+            foreach (var item in shoppingCart.cart)
+            {
+                decimal itemTotal = item.Price * item.Quantity; // Calculate the total for the current item
+                total += itemTotal; // Add to the overall total
+
+                // Display the item details
+                Console.WriteLine($"Product: {item.Name}\t${item.Price}\t{item.Quantity}");
+            }
+
+            // Display the total
+            Console.WriteLine("-----------------------------------------------------------------");
+            Console.WriteLine($"Total: ${total}");
 
             return total;
-           
         }
     }
 }
