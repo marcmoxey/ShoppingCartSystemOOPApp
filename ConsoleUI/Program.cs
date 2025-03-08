@@ -27,9 +27,11 @@ namespace ConsoleUI
                 }
 
             } while (true);
-        
+
+            ShoppingLogic.DisplayCart(shoppingCart);
             // remove item remove cart 
             Console.Write("Do you want to remove item(s) from your cart(yes/no): ");
+            Console.WriteLine();
             do
             {
                 Console.Write("What is the name of item(s) you want to remove: ");

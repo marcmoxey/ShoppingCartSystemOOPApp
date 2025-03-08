@@ -97,7 +97,7 @@ namespace ShoppingSystem
             }
 
             // ask how much they want to remove
-            Console.Write($"How many {productToRemove.Name} do you want to remove (Available: {productToRemove.Quantity}: ");
+            Console.Write($"How many {productToRemove.Name} do you want to remove (Available): {productToRemove.Quantity}: ");
             string quantityToRemoveText = Console.ReadLine();
             int quantityToRemove = 0;
             bool isValidQuantity = int.TryParse( quantityToRemoveText, out quantityToRemove);
@@ -106,7 +106,7 @@ namespace ShoppingSystem
             while(!isValidQuantity || quantityToRemove <= 0 || quantityToRemove > productToRemove.Quantity)
             {
                 Console.WriteLine("Invalid input. Please enter a valid quantity.");
-                Console.Write($"How many '{productToRemove.Name}' do you want to remove? (Available: {productToRemove.Quantity}): ");
+                Console.Write($"How many '{productToRemove.Name}' do you want to remove? (Available): {productToRemove.Quantity}): ");
                 quantityToRemoveText = Console.ReadLine();
                 isValidQuantity = int.TryParse(quantityToRemoveText, out quantityToRemove);
             }
@@ -114,24 +114,19 @@ namespace ShoppingSystem
 
             // Remove item(s) from the cart 
             if (quantityToRemove == productToRemove.Quantity)
-            { 
-            
+            {
+
                 // Remove the entire product if the quantity matches
                 shoppingCart.cart.Remove(productToRemove);
                 Console.WriteLine($"All {productToRemove.Quantity} '{productToRemove.Name}' have been removed from the cart.");
 
-            } else
+            }
+            else
             {
                 // Reduce the quantity of the product 
                 productToRemove.Quantity = quantityToRemove;
                 Console.WriteLine($"{quantityToRemove} '{productToRemove.Name}' have been removed from the cart.");
             }
-
-
-
-
-
-
                 return shoppingCart;
             
         }
@@ -150,6 +145,7 @@ namespace ShoppingSystem
             // Display cart header
             Console.WriteLine("\nShopping Cart");
             Console.WriteLine("-----------------------------------------------------------------");
+            Console.WriteLine("Product Name\tPrice\tQuantity");
 
             // Loop through items in the cart
             foreach (var item in shoppingCart.cart)
@@ -166,6 +162,31 @@ namespace ShoppingSystem
             Console.WriteLine($"Total: ${total}");
 
             return total;
+        }
+
+        public static void DisplayCart(ShoppingCartModel shoppingCart) 
+        {
+            // Check if the cart is empty
+            if (shoppingCart.cart == null || shoppingCart.cart.Count == 0)
+            {
+                Console.WriteLine("Your cart is empty.");
+                return;
+            }
+
+            // Display cart header
+            Console.WriteLine("\nShopping Cart");
+            Console.WriteLine("-----------------------------------------------------------------");
+            Console.WriteLine("Product Name\tPrice\tQuantity");
+
+            // Loop through items in the cart
+            foreach (var item in shoppingCart.cart)
+            {
+                // Display the item details
+                Console.WriteLine($"{item.Name}\t${item.Price}\t{item.Quantity}");
+            }
+
+            // Display footer
+            Console.WriteLine("-----------------------------------------------------------------");
         }
     }
 }
